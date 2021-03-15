@@ -1,60 +1,57 @@
-import { uuid } from 'uuidv4';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+@Entity('orders')
 class Order {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   client: string;
 
+  @Column()
   modelName: string;
 
+  @Column()
   type: string;
 
+  @Column('timestamp with time zone')
   entryDate: Date;
 
+  @Column('timestamp with time zone')
   departureDate: Date;
 
+  @Column('int')
   modelingTime: number;
 
+  @Column('int')
   cuttingTime: number;
 
+  @Column('int')
   setupTime: number;
 
+  @Column('int')
   sewingTime: number;
 
+  @Column('int')
   numberOfPieces: number;
 
+  @Column()
   sector: string;
 
+  @Column()
   rawMaterial: string;
 
-  constructor({
-    client,
-    modelName,
-    type,
-    entryDate,
-    departureDate,
-    modelingTime,
-    cuttingTime,
-    setupTime,
-    sewingTime,
-    numberOfPieces,
-    sector,
-    rawMaterial,
-  }: Omit<Order, 'id'>) {
-    this.id = uuid();
-    this.client = client;
-    this.modelName = modelName;
-    this.type = type;
-    this.entryDate = entryDate;
-    this.departureDate = departureDate;
-    this.modelingTime = modelingTime;
-    this.cuttingTime = cuttingTime;
-    this.setupTime = setupTime;
-    this.sewingTime = sewingTime;
-    this.numberOfPieces = numberOfPieces;
-    this.sector = sector;
-    this.rawMaterial = rawMaterial;
-  }
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
 
 export default Order;
