@@ -1,10 +1,11 @@
-import { getRepository } from 'typeorm';
-import path from 'path';
-import fs from 'fs';
+// import { getRepository } from 'typeorm';
+
+import UsersCustomRepository from '../repositories/UsersCustomRepository';
+
+import DiskStorageProvider from '../providers';
 
 import AppError from '../errors/AppError';
 
-import uploadConfig from '../config/upload';
 import User from '../models/User';
 
 interface IRequest {
@@ -14,28 +15,29 @@ interface IRequest {
 
 class UpdateUserAvatarService {
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
-    const usersRepository = getRepository(User);
+    const storageProvider = new DiskStorageProvider();
 
-    const user = await usersRepository.findOne(user_id);
+    // const usersRepository = getRepository(User);
+
+    const usersCustomRepository = new UsersCustomRepository();
+
+    const user = await usersCustomRepository.getUserById(user_id);
 
     if (!user) {
       throw new AppError('Only authenticated users can change avatar', 401);
     }
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await storageProvider.deleteFile(user.avatar);
     }
 
-    user.avatar = avatarFilename;
+    const fileName = await storageProvider.saveFile(avatarFilename);
 
-    await usersRepository.save(user);
+    user.avatar = fileName;
 
-    return user;
+    const userUpdated = await usersCustomRepository.updateUser(user);
+
+    return userUpdated;
   }
 }
 

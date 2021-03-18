@@ -1,10 +1,10 @@
 import { startOfHour } from 'date-fns';
-import { getCustomRepository } from 'typeorm';
 
 import AppError from '../errors/AppError';
 
 import Order from '../models/Order';
-import OrdersRepository from '../repositories/OrdersRepository';
+
+import OrdersCustomRepository from '../repositories/OrdersCustomRepository';
 
 interface IRequest {
   client: string;
@@ -36,11 +36,11 @@ class CreateOrderService {
     sector,
     rawMaterial,
   }: IRequest): Promise<Order> {
-    const ordersRepository = getCustomRepository(OrdersRepository);
+    const ordersCustomRepository = new OrdersCustomRepository();
     const entryDateFormated = startOfHour(entryDate);
     const departureDateFormated = startOfHour(departureDate);
 
-    const findByDepartureDateAndModelName = await ordersRepository.findByDepartureDateAndModelName(
+    const findByDepartureDateAndModelName = await ordersCustomRepository.findByDepartureDateAndModelName(
       departureDateFormated,
       modelName,
     );
@@ -49,7 +49,7 @@ class CreateOrderService {
       throw new AppError('This order is already recorded');
     }
 
-    const order = ordersRepository.create({
+    const order = await ordersCustomRepository.createOrder({
       client,
       modelName,
       type,
@@ -63,8 +63,6 @@ class CreateOrderService {
       sector,
       rawMaterial,
     });
-
-    await ordersRepository.save(order);
 
     return order;
   }
