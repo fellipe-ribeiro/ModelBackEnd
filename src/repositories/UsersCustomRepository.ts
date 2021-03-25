@@ -1,9 +1,30 @@
-import { getCustomRepository, EntityRepository, Repository } from 'typeorm';
+import {
+  getCustomRepository,
+  EntityRepository,
+  Repository,
+  Not,
+} from 'typeorm';
 
 import User from '../models/User';
 
 @EntityRepository(User)
 class UsersCustomRepository extends Repository<User> {
+  public async getAllUsers(): Promise<User[]> {
+    const usersRepository = getCustomRepository(UsersCustomRepository);
+
+    const users = await usersRepository.find();
+
+    return users;
+  }
+
+  public async getAllUsersExceptUserIdAuth(user_id: string): Promise<User[]> {
+    const usersRepository = getCustomRepository(UsersCustomRepository);
+
+    const users = await usersRepository.find({ where: { id: Not(user_id) } });
+
+    return users;
+  }
+
   public async getUserByEmail(email: string): Promise<User | undefined> {
     const usersRepository = getCustomRepository(UsersCustomRepository);
 

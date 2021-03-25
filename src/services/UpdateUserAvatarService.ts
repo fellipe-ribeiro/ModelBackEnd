@@ -1,8 +1,6 @@
-// import { getRepository } from 'typeorm';
-
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
 
-import DiskStorageProvider from '../providers';
+import DiskStorageProvider from '../providers/StorageProvider/DiskStorageProvider';
 
 import AppError from '../errors/AppError';
 
@@ -16,8 +14,6 @@ interface IRequest {
 class UpdateUserAvatarService {
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
     const storageProvider = new DiskStorageProvider();
-
-    // const usersRepository = getRepository(User);
 
     const usersCustomRepository = new UsersCustomRepository();
 

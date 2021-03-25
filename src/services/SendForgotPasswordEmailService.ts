@@ -1,6 +1,7 @@
+import path from 'path';
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
-import UserTokenCustomRepository from '../repositories/UserTokenCustomRepository';
-// import User from '../models/User';
+import UserTokensCustomRepository from '../repositories/UserTokensCustomRepository';
+import EtherealMailProvider from '../providers/MailProvider/EtherealMailProvider';
 
 import AppError from '../errors/AppError';
 
@@ -11,7 +12,8 @@ interface IRequest {
 class SendForgotPasswordEmailService {
   public async execute({ email }: IRequest): Promise<void> {
     const usersCustomRepository = new UsersCustomRepository();
-    const userTokenCustomRepository = new UserTokenCustomRepository();
+    const userTokensCustomRepository = new UserTokensCustomRepository();
+    const etherealMailProvider = new EtherealMailProvider();
 
     const user = await usersCustomRepository.getUserByEmail(email);
 
@@ -19,7 +21,30 @@ class SendForgotPasswordEmailService {
       throw new AppError('User does not exists');
     }
 
-    await userTokenCustomRepository.generate(user.id);
+    const { token } = await userTokensCustomRepository.generate(user.id);
+
+    const forgotPasswordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgot_password.hbs',
+    );
+
+    await etherealMailProvider.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[Model] Recuperação de senha',
+      templateData: {
+        file: forgotPasswordTemplate,
+        variables: {
+          name: user.name,
+          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
+          token,
+        },
+      },
+    });
   }
 }
 

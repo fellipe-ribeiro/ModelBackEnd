@@ -1,5 +1,6 @@
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import HashProvider from '../providers/HashProvider/BCryptHashProvider';
+
 import authConfig from '../config/auth';
 
 import AppError from '../errors/AppError';
@@ -20,6 +21,8 @@ interface IResponse {
 
 class AuthenticateUserService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
+    const hashProvider = new HashProvider();
+
     const usersCustomRepository = new UsersCustomRepository();
 
     const user = await usersCustomRepository.getUserByEmail(email);
@@ -31,7 +34,10 @@ class AuthenticateUserService {
     // user.password - Senha criptografada
     // password - Senha não criptografada
 
-    const passwordMatched = await compare(password, user.password);
+    const passwordMatched = await hashProvider.compareHash(
+      password,
+      user.password,
+    );
 
     if (!passwordMatched) {
       throw new AppError('Incorrect email/password combination.', 401);

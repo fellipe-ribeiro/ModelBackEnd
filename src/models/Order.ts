@@ -4,12 +4,22 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import User from './User';
 
 @Entity('orders')
 class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column()
   client: string;
@@ -26,17 +36,26 @@ class Order {
   @Column('timestamp with time zone')
   departureDate: Date;
 
-  @Column('int')
-  modelingTime: number;
+  @Column('timestamp with time zone')
+  modelingTime: Date;
 
-  @Column('int')
-  cuttingTime: number;
+  @Column('timestamp with time zone')
+  cuttingTime: Date;
 
-  @Column('int')
-  setupTime: number;
+  @Column('timestamp with time zone')
+  setupTime: Date;
 
-  @Column('int')
-  sewingTime: number;
+  @Column('timestamp with time zone')
+  sewingTime: Date;
+
+  @Column('timestamp with time zone')
+  finishingTime: Date;
+
+  @Column('timestamp with time zone')
+  readyDate: Date;
+
+  @Column('timestamp with time zone')
+  deliveredDate: Date;
 
   @Column('int')
   numberOfPieces: number;
@@ -46,6 +65,9 @@ class Order {
 
   @Column()
   rawMaterial: string;
+
+  @Column()
+  changed: string;
 
   @CreateDateColumn()
   created_at: Date;
