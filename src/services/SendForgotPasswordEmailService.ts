@@ -1,7 +1,8 @@
 import path from 'path';
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
 import UserTokensCustomRepository from '../repositories/UserTokensCustomRepository';
-import EtherealMailProvider from '../providers/MailProvider/EtherealMailProvider';
+// import MailProvider from '../providers/MailProvider/EtherealMailProvider';
+import MailProvider from '../providers/MailProvider/SESMailProvider';
 
 import AppError from '../errors/AppError';
 
@@ -13,7 +14,7 @@ class SendForgotPasswordEmailService {
   public async execute({ email }: IRequest): Promise<void> {
     const usersCustomRepository = new UsersCustomRepository();
     const userTokensCustomRepository = new UserTokensCustomRepository();
-    const etherealMailProvider = new EtherealMailProvider();
+    const mailProvider = new MailProvider();
 
     const user = await usersCustomRepository.getUserByEmail(email);
 
@@ -30,7 +31,7 @@ class SendForgotPasswordEmailService {
       'forgot_password.hbs',
     );
 
-    await etherealMailProvider.sendMail({
+    await mailProvider.sendMail({
       to: {
         name: user.name,
         email: user.email,

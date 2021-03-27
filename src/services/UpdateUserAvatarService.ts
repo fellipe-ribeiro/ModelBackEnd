@@ -1,6 +1,7 @@
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
 
-import DiskStorageProvider from '../providers/StorageProvider/DiskStorageProvider';
+// import StorageProvider from '../providers/StorageProvider/DiskStorageProvider';
+import StorageProvider from '../providers/StorageProvider/S3StorageProvider';
 
 import AppError from '../errors/AppError';
 
@@ -13,7 +14,7 @@ interface IRequest {
 
 class UpdateUserAvatarService {
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
-    const storageProvider = new DiskStorageProvider();
+    const storageProvider = new StorageProvider();
 
     const usersCustomRepository = new UsersCustomRepository();
 
