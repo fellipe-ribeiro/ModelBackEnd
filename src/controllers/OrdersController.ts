@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 
 import { parseISO } from 'date-fns';
+
 import CreateOrderService from '../services/CreateOrderService';
-
-import OrdersCustomRepository from '../repositories/OrdersCustomRepository';
-
-const ordersCustomRepository = new OrdersCustomRepository();
+import ListAllOrdersService from '../services/ListAllOrdersService';
+import ListSectorOrdersService from '../services/ListSectorOrdersService';
 
 export default class OrdersController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -63,7 +62,9 @@ export default class OrdersController {
   }
 
   public async getAll(request: Request, response: Response): Promise<Response> {
-    const orders = await ordersCustomRepository.getAllOrders();
+    const listAllOrdersService = new ListAllOrdersService();
+
+    const orders = await listAllOrdersService.execute();
 
     return response.json(orders);
   }
@@ -73,10 +74,9 @@ export default class OrdersController {
     response: Response,
   ): Promise<Response> {
     const { sectorName } = request.query;
+    const listSectorOrdersService = new ListSectorOrdersService();
 
-    const orders = await ordersCustomRepository.getSectorOrders({
-      sectorName: String(sectorName),
-    });
+    const orders = await listSectorOrdersService.execute(sectorName as string);
 
     return response.json(orders);
   }

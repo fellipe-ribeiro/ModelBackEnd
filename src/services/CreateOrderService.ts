@@ -11,6 +11,8 @@ import AppError from '../errors/AppError';
 
 import Order from '../models/Order';
 
+import CacheProvider from '../providers/CacheProvider/RedisCacheProvider';
+
 import OrdersCustomRepository from '../repositories/OrdersCustomRepository';
 
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
@@ -108,6 +110,13 @@ class CreateOrderService {
       rawMaterial,
     });
 
+    const cacheProvider = new CacheProvider();
+
+    await cacheProvider.invalidate('orders-list:All');
+    await cacheProvider.invalidate(`orders-list:${sector}`);
+
+    console.log(`orders-list:${sector}`);
+
     const usersCustomRepository = new UsersCustomRepository();
 
     const usersExceptUserAuth = usersCustomRepository.getAllUsersExceptUserIdAuth(
@@ -134,7 +143,7 @@ class CreateOrderService {
 
     const message: admin.messaging.MulticastMessage = {
       notification: {
-        title: 'Um novo pedido foi criado',
+        title: 'Um novo pedido foi criado:',
         body: `Cliente: ${client}\nNome: ${modelName}\nData de sáida: ${departureDateFormatedLocally}`,
       },
       tokens: devicesTokens,

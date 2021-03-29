@@ -38,9 +38,7 @@ class OrdersCustomRepository extends Repository<Order> {
     return orders;
   }
 
-  public async getSectorOrders(
-    sector: ISectorDTO,
-  ): Promise<Order[] | undefined> {
+  public async getSectorOrders(sector: ISectorDTO): Promise<Order[]> {
     const ordersRepository = getCustomRepository(OrdersCustomRepository);
 
     const orders = await ordersRepository.find({

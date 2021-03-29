@@ -8,11 +8,13 @@ import 'express-async-errors';
 import routes from './routes';
 import uploadConfig from './config/upload';
 import AppError from './errors/AppError';
+import rateLimiter from './middlewares/rateLimiter';
 
 import './database';
 
 const app = express();
 
+app.use(rateLimiter);
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(routes);
