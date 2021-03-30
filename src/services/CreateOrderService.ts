@@ -19,9 +19,7 @@ import UsersCustomRepository from '../repositories/UsersCustomRepository';
 
 import NotificationsRepository from '../repositories/NotificationsRepository';
 
-import DevicesTokensRepository from '../repositories/DevicesTokensRepository';
-
-import admin from '../providers/PushNotificationProvider/Firebase';
+import pushQueue from '../providers/QueueProvider/Bull';
 
 interface IRequest {
   user_id: string;
@@ -137,23 +135,13 @@ class CreateOrderService {
       });
     });
 
-    const deviceTokensRepository = new DevicesTokensRepository();
-
-    const devicesTokens = await deviceTokensRepository.getAllTokens();
-
-    const message: admin.messaging.MulticastMessage = {
-      notification: {
-        title: 'Um novo pedido foi criado:',
-        body: `Cliente: ${client}\nNome: ${modelName}\nData de sáida: ${departureDateFormatedLocally}`,
-      },
-      tokens: devicesTokens,
+    const orderData = {
+      client,
+      modelName,
+      departureDateFormatedLocally,
     };
 
-    console.log(message);
-
-    const result = await admin.messaging().sendMulticast(message);
-
-    console.log(result.responses);
+    await pushQueue.add('RegistrationPushNotification', { orderData });
 
     return order;
   }
