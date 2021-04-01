@@ -1,7 +1,9 @@
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
 
-// import StorageProvider from '../providers/StorageProvider/DiskStorageProvider';
-import StorageProvider from '../providers/StorageProvider/S3StorageProvider';
+import uploadConfig from '../config/upload';
+
+import StorageProviderDisk from '../providers/StorageProvider/DiskStorageProvider';
+import StorageProviderS3 from '../providers/StorageProvider/S3StorageProvider';
 
 import AppError from '../errors/AppError';
 
@@ -14,7 +16,13 @@ interface IRequest {
 
 class UpdateUserAvatarService {
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
-    const storageProvider = new StorageProvider();
+    let storageProvider;
+
+    if (uploadConfig.driver === 's3') {
+      storageProvider = new StorageProviderS3();
+    } else {
+      storageProvider = new StorageProviderDisk();
+    }
 
     const usersCustomRepository = new UsersCustomRepository();
 

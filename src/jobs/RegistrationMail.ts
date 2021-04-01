@@ -2,8 +2,10 @@ import path from 'path';
 import UserTokensCustomRepository from '../repositories/UserTokensCustomRepository';
 import UsersCustomRepository from '../repositories/UsersCustomRepository';
 
-// import MailProvider from '../providers/MailProvider/EtherealMailProvider';
-import MailProvider from '../providers/MailProvider/SESMailProvider';
+import mailConfig from '../config/mail';
+
+import MailProviderEthereal from '../providers/MailProvider/EtherealMailProvider';
+import MailProviderSES from '../providers/MailProvider/SESMailProvider';
 
 import AppError from '../errors/AppError';
 
@@ -14,7 +16,14 @@ export default {
 
     const usersCustomRepository = new UsersCustomRepository();
     const userTokensCustomRepository = new UserTokensCustomRepository();
-    const mailProvider = new MailProvider();
+
+    let mailProvider;
+
+    if (mailConfig.driver === 'ses') {
+      mailProvider = new MailProviderSES();
+    } else {
+      mailProvider = new MailProviderEthereal();
+    }
 
     const user = await usersCustomRepository.getUserByEmail(userData.email);
 
