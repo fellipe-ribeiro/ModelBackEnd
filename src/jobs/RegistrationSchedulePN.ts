@@ -17,33 +17,33 @@ export default {
   key: 'RegistrationSchedulePN',
   async handle(): Promise<void> {
     const ruleDelayedDeparture = new schedule.RecurrenceRule();
-    ruleDelayedDeparture.hour = 1;
-    ruleDelayedDeparture.minute = 54;
+    ruleDelayedDeparture.hour = 9;
+    ruleDelayedDeparture.minute = 0;
     ruleDelayedDeparture.tz = 'America/Sao_Paulo';
 
     const ruleCheckOutToday = new schedule.RecurrenceRule();
-    ruleCheckOutToday.hour = 1;
-    ruleCheckOutToday.minute = 55;
+    ruleCheckOutToday.hour = 9;
+    ruleCheckOutToday.minute = 30;
     ruleCheckOutToday.tz = 'America/Sao_Paulo';
 
     const ruleCheckOutTomorrow = new schedule.RecurrenceRule();
-    ruleCheckOutTomorrow.hour = 1;
-    ruleCheckOutTomorrow.minute = 56;
+    ruleCheckOutTomorrow.hour = 10;
+    ruleCheckOutTomorrow.minute = 0;
     ruleCheckOutTomorrow.tz = 'America/Sao_Paulo';
 
     const ruleDelayedDepartureSector = new schedule.RecurrenceRule();
-    ruleDelayedDepartureSector.hour = 2;
-    ruleDelayedDepartureSector.minute = 1;
+    ruleDelayedDepartureSector.hour = 10;
+    ruleDelayedDepartureSector.minute = 30;
     ruleDelayedDepartureSector.tz = 'America/Sao_Paulo';
 
     const ruleCheckOutTodaySector = new schedule.RecurrenceRule();
-    ruleCheckOutTodaySector.hour = 2;
-    ruleCheckOutTodaySector.minute = 2;
+    ruleCheckOutTodaySector.hour = 11;
+    ruleCheckOutTodaySector.minute = 0;
     ruleCheckOutTodaySector.tz = 'America/Sao_Paulo';
 
     const ruleCheckOutTomorrowSector = new schedule.RecurrenceRule();
-    ruleCheckOutTomorrowSector.hour = 2;
-    ruleCheckOutTomorrowSector.minute = 3;
+    ruleCheckOutTomorrowSector.hour = 11;
+    ruleCheckOutTomorrowSector.minute = 30;
     ruleCheckOutTomorrowSector.tz = 'America/Sao_Paulo';
 
     const ordersCustomRepository = new OrdersCustomRepository();
@@ -52,7 +52,7 @@ export default {
     const deviceTokensRepository = new DevicesTokensRepository();
 
     schedule.scheduleJob(ruleDelayedDeparture, async () => {
-      console.log('Teste Schedule Saída atrasada!!!!!');
+      console.log('Schedule Saída atrasada!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       orders.forEach(async order => {
@@ -88,7 +88,7 @@ export default {
     });
 
     schedule.scheduleJob(ruleCheckOutToday, async () => {
-      console.log('Teste Schedule Saída hoje!!!!!');
+      console.log('Schedule Saída hoje!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       orders.forEach(async order => {
@@ -120,7 +120,7 @@ export default {
     });
 
     schedule.scheduleJob(ruleCheckOutTomorrow, async () => {
-      console.log('Teste Schedule Saída amanhã!!!!!');
+      console.log('Schedule Saída amanhã!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       orders.forEach(async order => {
@@ -157,7 +157,7 @@ export default {
     });
 
     schedule.scheduleJob(ruleDelayedDepartureSector, async () => {
-      console.log('Teste Schedule Saída setor atrasada!!!!!');
+      console.log('Schedule Saída setor atrasada!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       let dateSectorCompare: Date;
@@ -217,7 +217,7 @@ export default {
     });
 
     schedule.scheduleJob(ruleCheckOutTodaySector, async () => {
-      console.log('Teste Schedule Saída setor hoje!!!!!');
+      console.log('Schedule Saída setor hoje!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       let dateSectorCompare: Date;
@@ -273,7 +273,7 @@ export default {
     });
 
     schedule.scheduleJob(ruleCheckOutTomorrowSector, async () => {
-      console.log('Teste Schedule Saída setor amanhã!!!!!');
+      console.log('Schedule Saída setor amanhã!!!!!');
 
       const orders = await ordersCustomRepository.getAllOrders();
       let dateSectorCompare: Date;
