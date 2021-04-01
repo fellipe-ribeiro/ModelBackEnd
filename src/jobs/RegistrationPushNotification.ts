@@ -8,20 +8,24 @@ export default {
 
     const deviceTokensRepository = new DevicesTokensRepository();
 
-    const devicesTokens = await deviceTokensRepository.getAllTokens();
+    const devicesTokens = await deviceTokensRepository.getAllTokensExceptUserAuth(
+      orderData.user_id,
+    );
 
-    const message: admin.messaging.MulticastMessage = {
-      notification: {
-        title: 'Um novo pedido foi criado:',
-        body: `Cliente: ${orderData.client}\nNome: ${orderData.modelName}\nData de sáida: ${orderData.departureDateFormatedLocally}`,
-      },
-      tokens: devicesTokens,
-    };
+    if (devicesTokens.length >= 1) {
+      const message: admin.messaging.MulticastMessage = {
+        notification: {
+          title: 'Um novo pedido foi criado:',
+          body: `Cliente: ${orderData.client}\nNome: ${orderData.modelName}\nData de sáida: ${orderData.departureDateFormatedLocally}`,
+        },
+        tokens: devicesTokens,
+      };
 
-    console.log(message);
+      console.log(message);
 
-    const result = await admin.messaging().sendMulticast(message);
+      const result = await admin.messaging().sendMulticast(message);
 
-    console.log(result.responses);
+      console.log(result.responses);
+    }
   },
 };

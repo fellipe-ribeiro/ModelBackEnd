@@ -117,7 +117,7 @@ class CreateOrderService {
 
     const usersCustomRepository = new UsersCustomRepository();
 
-    const usersExceptUserAuth = usersCustomRepository.getAllUsersExceptUserIdAuth(
+    const usersExceptUserAuth = await usersCustomRepository.getAllUsersExceptUserIdAuth(
       user_id,
     );
 
@@ -128,7 +128,7 @@ class CreateOrderService {
       'dd/MM/yyyy',
     );
 
-    (await usersExceptUserAuth).map(async user => {
+    usersExceptUserAuth.map(async user => {
       await notificationsRepository.create({
         recipient_id: user.id,
         content: `Novo pedido criado com data de saída para ${departureDateFormatedLocally}`,
@@ -136,6 +136,7 @@ class CreateOrderService {
     });
 
     const orderData = {
+      user_id,
       client,
       modelName,
       departureDateFormatedLocally,

@@ -24,7 +24,7 @@ const queues = Object.values(jobs).map(job => ({
 
 export default {
   queues,
-  add(name: unknown, data: unknown): Promise<Queue.Job<any>> {
+  add(name: unknown, data?: unknown): Promise<Queue.Job<any>> {
     const queue = this.queues.find(queue => queue.name === name);
 
     if (!queue) {

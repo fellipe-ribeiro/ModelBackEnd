@@ -2,8 +2,10 @@ import 'reflect-metadata';
 import 'dotenv/config';
 import './database';
 
-import mailQueue from './providers/QueueProvider/Bull';
+import Queue from './providers/QueueProvider/Bull';
 
-mailQueue.process();
+Queue.process();
+
+Queue.add('RegistrationSchedulePN');
 
 console.log('Queue started!');
