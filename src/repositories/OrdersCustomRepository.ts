@@ -28,6 +28,10 @@ interface ISectorDTO {
   sectorName: string;
 }
 
+interface IOrderIdDTO {
+  orderId: string;
+}
+
 @EntityRepository(Order)
 class OrdersCustomRepository extends Repository<Order> {
   public async getAllOrders(): Promise<Order[]> {
@@ -46,6 +50,20 @@ class OrdersCustomRepository extends Repository<Order> {
     });
 
     return orders;
+  }
+
+  public async getOrderByID(ord: IOrderIdDTO): Promise<Order | undefined> {
+    const ordersRepository = getCustomRepository(OrdersCustomRepository);
+
+    const order = await ordersRepository.findOne({
+      where: { id: ord.orderId },
+    });
+
+    if (!order) {
+      return undefined;
+    }
+
+    return order;
   }
 
   public async createOrder({

@@ -15,6 +15,8 @@ ordersRouter.get('/', ordersController.getAll);
 
 ordersRouter.get('/sector', ordersController.getBySector);
 
+ordersRouter.get('/byid', ordersController.getByOrderID);
+
 ordersRouter.post(
   '/',
   celebrate({

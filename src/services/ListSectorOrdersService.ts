@@ -6,7 +6,7 @@ import Order from '../models/Order';
 const ordersCustomRepository = new OrdersCustomRepository();
 const cacheProvider = new CacheProvider();
 
-class ShowProfileService {
+class ListSectorOrdersService {
   public async execute(sectorName: string): Promise<Order[]> {
     let orders = await cacheProvider.recover<Order[]>(
       `orders-list:${sectorName}`,
@@ -23,4 +23,4 @@ class ShowProfileService {
   }
 }
 
-export default ShowProfileService;
+export default ListSectorOrdersService;

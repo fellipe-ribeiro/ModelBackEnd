@@ -5,6 +5,7 @@ import { parseISO } from 'date-fns';
 import CreateOrderService from '../services/CreateOrderService';
 import ListAllOrdersService from '../services/ListAllOrdersService';
 import ListSectorOrdersService from '../services/ListSectorOrdersService';
+import ListOrderByIDService from '../services/ListOrderByIDService';
 
 export default class OrdersController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -77,6 +78,18 @@ export default class OrdersController {
     const listSectorOrdersService = new ListSectorOrdersService();
 
     const orders = await listSectorOrdersService.execute(sectorName as string);
+
+    return response.json(orders);
+  }
+
+  public async getByOrderID(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { id } = request.query;
+    const listOrderByIDService = new ListOrderByIDService();
+
+    const orders = await listOrderByIDService.execute(id as string);
 
     return response.json(orders);
   }
