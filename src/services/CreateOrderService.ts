@@ -1,9 +1,9 @@
 import {
   startOfHour,
-  isBefore,
-  isAfter,
-  addDays,
-  subDays,
+  // isBefore,
+  // isAfter,
+  // addDays,
+  // subDays,
   format,
 } from 'date-fns';
 
@@ -79,7 +79,7 @@ class CreateOrderService {
     if (findByDepartureDateAndModelName) {
       throw new AppError('This order is already recorded');
     }
-    const compareDateBefore = subDays(Date.now(), 6);
+    /*  const compareDateBefore = subDays(Date.now(), 6);
     const compareDateAfter = addDays(Date.now(), 5);
 
     if (
@@ -87,7 +87,7 @@ class CreateOrderService {
       isAfter(entryDateFormated, compareDateAfter)
     ) {
       throw new AppError('The entry date must be in a range of 5 days');
-    }
+    } */
 
     const order = await ordersCustomRepository.createOrder({
       user_id,
