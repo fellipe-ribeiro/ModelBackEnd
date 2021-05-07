@@ -66,6 +66,18 @@ class OrdersCustomRepository extends Repository<Order> {
     return order;
   }
 
+  public async deleteOrderByID(ord: IOrderIdDTO): Promise<string | undefined> {
+    const ordersRepository = getCustomRepository(OrdersCustomRepository);
+
+    const order = await ordersRepository.delete({ id: ord.orderId });
+
+    if (!order) {
+      return undefined;
+    }
+
+    return `order: ${ord.orderId} deleted successfully`;
+  }
+
   public async createOrder({
     user_id,
     client,

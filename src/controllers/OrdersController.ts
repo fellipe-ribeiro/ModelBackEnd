@@ -6,6 +6,7 @@ import CreateOrderService from '../services/CreateOrderService';
 import ListAllOrdersService from '../services/ListAllOrdersService';
 import ListSectorOrdersService from '../services/ListSectorOrdersService';
 import ListOrderByIDService from '../services/ListOrderByIDService';
+import DeleteOrderByIDService from '../services/DeleteOrderByIDService';
 
 export default class OrdersController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -90,6 +91,25 @@ export default class OrdersController {
     const listOrderByIDService = new ListOrderByIDService();
 
     const orders = await listOrderByIDService.execute(id as string);
+
+    return response.json(orders);
+  }
+
+  public async deleteByID(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const user_id = request.user.id;
+    const { id, client, modelName, sector } = request.body;
+    const deleteOrderByIDService = new DeleteOrderByIDService();
+
+    const orders = await deleteOrderByIDService.execute({
+      user_id,
+      orderId: id,
+      client,
+      modelName,
+      sector,
+    });
 
     return response.json(orders);
   }

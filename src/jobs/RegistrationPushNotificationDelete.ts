@@ -4,7 +4,7 @@ import UsersCustomRepository from '../repositories/UsersCustomRepository';
 import admin from '../providers/PushNotificationProvider/Firebase';
 
 export default {
-  key: 'RegistrationPushNotification',
+  key: 'RegistrationPushNotificationDelete',
   async handle({ data }: any): Promise<void> {
     const { orderData } = data;
 
@@ -21,8 +21,8 @@ export default {
     if (devicesTokens.length >= 1) {
       const message: admin.messaging.MulticastMessage = {
         notification: {
-          title: `Um novo pedido foi criado por: ${user?.name}`,
-          body: `Cliente: ${orderData.client}\nNome: ${orderData.modelName}\nData de sáida: ${orderData.departureDateFormatedLocally}`,
+          title: 'Um pedido foi deletado:',
+          body: `Pedido: ${orderData.modelName}\nCliente: ${orderData.client}\nDeletado pelo usuário: ${user?.name}`,
         },
         tokens: devicesTokens,
       };

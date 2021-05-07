@@ -17,6 +17,19 @@ ordersRouter.get('/sector', ordersController.getBySector);
 
 ordersRouter.get('/byid', ordersController.getByOrderID);
 
+ordersRouter.delete(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      id: Joi.string().uuid().required(),
+      client: Joi.string().required(),
+      modelName: Joi.string().required(),
+      sector: Joi.string().required(),
+    },
+  }),
+  ordersController.deleteByID,
+);
+
 ordersRouter.post(
   '/',
   celebrate({
